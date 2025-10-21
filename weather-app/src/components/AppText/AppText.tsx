@@ -10,7 +10,9 @@ function AppText({ text, style }: AppTextProps) {
     regular: "text-4xl",
   };
   // https://tailwindcss.com/docs/detecting-classes-in-source-files
-  return <div className={`${styles[style]} font-mono`}>{text}</div>;
+  return (
+    <div className={`${styles[style]} font-mono text-sky-950`}>{text}</div>
+  );
 }
 
 export default AppText;

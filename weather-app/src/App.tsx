@@ -1,4 +1,5 @@
 import "./App.css";
+import AppButton from "./components/AppButton/AppButton";
 import AppText from "./components/AppText/AppText";
 import InputField from "./components/InputField/InputField";
 
@@ -8,6 +9,7 @@ function App() {
       <AppText text="Weather Checker" style="title" />
       <AppText text="Choose a city:" style="header" />
       <InputField placeholderText="City name..."></InputField>
+      <AppButton text="Go!"></AppButton>
     </div>
   );
 }
