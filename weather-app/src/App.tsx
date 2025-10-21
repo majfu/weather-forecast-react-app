@@ -1,7 +1,15 @@
 import "./App.css";
+import AppText from "./components/AppText/AppText";
+import InputField from "./components/InputField/InputField";
 
 function App() {
-  return <div className="text-large">Weather App</div>;
+  return (
+    <div className="flex w-screen h-screen bg-sky-50 flex-col p-20 items-center">
+      <AppText text="Weather Checker" style="title" />
+      <AppText text="Choose a city:" style="header" />
+      <InputField placeholderText="City name..."></InputField>
+    </div>
+  );
 }
 
 export default App;
