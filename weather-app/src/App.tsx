@@ -8,6 +8,7 @@ import LoadingOverlay from "./components/LoadingOverlay/LoadingOverlay";
 import type { City } from "./model/City";
 import type { CitySearch } from "./model/CitySearch";
 import { getCitySearchResults } from "./AppService";
+import CityList from "./components/CityList/CityList";
 
 function App() {
   const [cityInput, setCityInput] = useState<string>("");
@@ -64,6 +65,7 @@ function App() {
       {searchResultsList && (
         <div className="flex flex-col items-center">
           <AppText text="Cities found:" style="header" />
+          <CityList cityList={searchResultsList} />
           <div ref={resultsEndRef} />
         </div>
       )}
