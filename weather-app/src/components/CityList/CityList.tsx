@@ -1,18 +1,15 @@
+import { useNavigate } from "react-router-dom";
 import type { City } from "../../model/City";
-import type { CityForecastSearch } from "../../model/CityForecastSearch";
 
 interface CityListProps {
   cityList: City[];
 }
 
 function CityList({ cityList }: CityListProps) {
+  const navigate = useNavigate();
+
   const showForecastForCity = async (city: City) => {
-    const cityForecastSearchParams: CityForecastSearch = {
-      lat: city.lat,
-      lon: city.lon,
-      appid: import.meta.env.VITE_WEATHER_API_KEY,
-      units: "standard",
-    };
+    navigate("/city-forecast", { state: { city } });
   };
 
   return (
