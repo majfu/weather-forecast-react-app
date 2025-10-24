@@ -1,15 +1,72 @@
+import { useEffect, useRef, useState } from "react";
 import "./App.css";
 import AppButton from "./components/AppButton/AppButton";
 import AppText from "./components/AppText/AppText";
 import InputField from "./components/InputField/InputField";
+import UnitChoiceGrid from "./components/UnitChoiceGrid/UnitChoiceGrid";
+import LoadingOverlay from "./components/LoadingOverlay/LoadingOverlay";
+import type { City } from "./model/City";
+import type { CitySearch } from "./model/CitySearch";
+import { getCitySearchResults } from "./AppService";
 
 function App() {
+  const [cityInput, setCityInput] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [searchResultsList, setSearchResultsList] = useState<City[]>([]);
+  const resultsEndRef = useRef<HTMLDivElement>(null);
+
+  const citySearchParams: CitySearch = {
+    q: cityInput,
+    limit: 6,
+    appid: import.meta.env.VITE_WEATHER_API_KEY,
+  };
+
+  const searchForCities = async (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (!cityInput.trim()) return;
+
+    setIsLoading(true);
+
+    try {
+      const results = await getCitySearchResults(citySearchParams);
+      setSearchResultsList(results);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    resultsEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  });
+
   return (
     <div className="flex w-screen h-screen bg-sky-50 flex-col p-20 items-center">
+      {isLoading && <LoadingOverlay />}
+
+      <UnitChoiceGrid />
       <AppText text="Weather Checker" style="title" />
       <AppText text="Choose a city:" style="header" />
-      <InputField placeholderText="City name..."></InputField>
-      <AppButton text="Go!"></AppButton>
+
+      <form
+        onSubmit={searchForCities}
+        className="flex flex-col items-center mb-15"
+      >
+        <InputField
+          placeholderText="City name..."
+          userInput={cityInput}
+          setUserInput={setCityInput}
+        />
+        <AppButton text="Go!" />
+      </form>
+
+      {searchResultsList && (
+        <div className="flex flex-col items-center">
+          <AppText text="Cities found:" style="header" />
+          <div ref={resultsEndRef} />
+        </div>
+      )}
     </div>
   );
 }
