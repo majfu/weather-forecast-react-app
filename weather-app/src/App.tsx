@@ -62,7 +62,7 @@ function App() {
         <AppButton text="Go!" />
       </form>
 
-      {searchResultsList && (
+      {searchResultsList.length != 0 && (
         <div className="flex flex-col items-center">
           <AppText text="Cities found:" style="header" />
           <CityList cityList={searchResultsList} />
