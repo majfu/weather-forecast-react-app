@@ -56,7 +56,9 @@ function CityForecastPage() {
     const currentFavorites = getCurrentFavorites();
 
     const updatedFavorites = isFavorite
-      ? [...currentFavorites, city]
+      ? currentFavorites.some((favorite) => isTheSameCity(favorite, city))
+        ? currentFavorites
+        : [...currentFavorites, city]
       : currentFavorites.filter((fav) => !isTheSameCity(fav, city));
 
     localStorage.setItem("favoritesList", JSON.stringify(updatedFavorites));
