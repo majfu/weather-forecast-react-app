@@ -68,7 +68,7 @@ function CityForecastPage() {
             />
           </div>
           <AppText text={`Forecast for ${city.name}`} style="title" />
-          <AppText text="Current weather ouside is" style="header" />
+          <AppText text="Current weather outside is" style="header" />
           <AppText
             text={`Temperature: ${currentForecast.main.temp}`}
             style="regular"
