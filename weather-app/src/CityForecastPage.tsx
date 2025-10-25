@@ -1,4 +1,4 @@
-import { Navigate, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import type { CityForecastSearch } from "./model/CityForecastSearch";
 import { useEffect, useState } from "react";
 import { getCurrentForecast } from "./AppService";
@@ -8,15 +8,14 @@ import AppText from "./components/AppText/AppText";
 
 function CityForecastPage() {
   const location = useLocation();
-  const state = location.state;
-  const city = state.city;
+  const city = location.state?.city;
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [currentForecast, setCurrentForecast] = useState<CityForecast>();
 
   const cityForecastSearchParams: CityForecastSearch = {
-    lat: city.lat,
-    lon: city.lon,
+    lat: city?.lat,
+    lon: city?.lon,
     appid: import.meta.env.VITE_WEATHER_API_KEY,
     units: "standard",
   };
@@ -55,7 +54,15 @@ function CityForecastPage() {
         </div>
       ) : (
         !isLoading && (
-          <AppText text={`No forecast available :(`} style="title" />
+          <div className="text-center">
+            <AppText text={`No forecast available :(`} style="title" />
+            <Link
+              to="/"
+              className="font-mono text-sky-950 text-6xl font-semibold bg-sky-200 hover:bg-sky-950 hover:text-white rounded-lg p-5"
+            >
+              Go to Home Page
+            </Link>
+          </div>
         )
       )}
     </div>
