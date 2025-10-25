@@ -33,6 +33,13 @@ function CityForecastPage() {
     }
   };
 
+  // A note about what needs to be diplayed here ;) temporary
+  // bieżące warunki pogodowe (w formie odpowiedniej ikony),
+  // prawdopodobieństwo wystąpienia opadów (wyrażona w procentach),
+  // ich rodzaj oraz ilość (wyrażona w milimetrach na metr kwadratowy), prędkość i kierunek wiatru,
+  // stopień zachmurzenia.
+  // prognozowana temperatura i warunki pogodowe na najbliższe 5 dni,
+
   useEffect(() => {
     getForecast();
   }, []);
@@ -43,6 +50,7 @@ function CityForecastPage() {
       {currentForecast ? (
         <div>
           <AppText text={`Forecast for ${city.name}`} style="title" />
+          <AppText text="Current weather ouside is" style="header" />
           <AppText
             text={`Temperature: ${currentForecast.main.temp}`}
             style="regular"
