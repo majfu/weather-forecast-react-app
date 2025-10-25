@@ -21,6 +21,11 @@ function App() {
     return localStorage.getItem("unitPreference") || "metric";
   });
 
+  const [favoriteCitiesList, setFavoriteCitiesList] = useState(() => {
+    const storedFavorites = localStorage.getItem("favoritesList");
+    return storedFavorites ? (JSON.parse(storedFavorites) as City[]) : [];
+  });
+
   useEffect(() => {
     localStorage.setItem("unitPreference", unitPreference);
   }, [unitPreference]);
@@ -90,6 +95,14 @@ function App() {
 
       {isCityNotFound == true && (
         <AppText text="Sorry, no city was found." style="header" />
+      )}
+
+      {favoriteCitiesList.length != 0 && (
+        <div className="text-center mt-15">
+          <AppText text="Your Favorites:" style="header" />
+          <CityList cityList={favoriteCitiesList} />
+          <div ref={resultsEndRef} />
+        </div>
       )}
     </div>
   );
