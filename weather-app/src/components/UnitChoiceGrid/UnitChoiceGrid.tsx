@@ -8,7 +8,7 @@ function UnitChoiceGrid() {
 
   useEffect(() => {
     localStorage.setItem("unitPreference", unitPreference);
-  });
+  }, [unitPreference]);
 
   return (
     <div className="flex justify-end w-full mb-20 gap-10 text-4xl font-mono font-extrabold">
