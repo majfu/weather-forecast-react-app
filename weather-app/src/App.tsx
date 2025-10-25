@@ -40,7 +40,7 @@ function App() {
 
   useEffect(() => {
     resultsEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  });
+  }, [searchResultsList]);
 
   return (
     <div className="flex w-screen h-screen bg-sky-50 flex-col p-20 items-center">
