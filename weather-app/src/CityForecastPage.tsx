@@ -5,10 +5,24 @@ import { getCurrentForecast } from "./AppService";
 import type { CityForecast } from "./model/CityForecast";
 import LoadingOverlay from "./components/LoadingOverlay/LoadingOverlay";
 import AppText from "./components/AppText/AppText";
+import UnitChoiceGrid from "./components/UnitChoiceGrid/UnitChoiceGrid";
 
 function CityForecastPage() {
   const location = useLocation();
   const city = location.state?.city;
+
+  const [unitPreference, setUnitPreference] = useState(() => {
+    return localStorage.getItem("unitPreference") || "metric";
+  });
+
+  useEffect(() => {
+    getForecast();
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("unitPreference", unitPreference);
+    getForecast();
+  }, [unitPreference]);
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [currentForecast, setCurrentForecast] = useState<CityForecast>();
@@ -17,7 +31,7 @@ function CityForecastPage() {
     lat: city?.lat,
     lon: city?.lon,
     appid: import.meta.env.VITE_WEATHER_API_KEY,
-    units: "standard",
+    units: unitPreference,
   };
 
   const getForecast = async () => {
@@ -40,15 +54,15 @@ function CityForecastPage() {
   // stopień zachmurzenia.
   // prognozowana temperatura i warunki pogodowe na najbliższe 5 dni,
 
-  useEffect(() => {
-    getForecast();
-  }, []);
-
   return (
     <div className="flex w-screen h-screen bg-sky-50 flex-col p-20 items-center">
       {isLoading && <LoadingOverlay />}
       {currentForecast ? (
         <div>
+          <UnitChoiceGrid
+            unitPreference={unitPreference}
+            setUnitPreference={setUnitPreference}
+          />
           <AppText text={`Forecast for ${city.name}`} style="title" />
           <AppText text="Current weather ouside is" style="header" />
           <AppText

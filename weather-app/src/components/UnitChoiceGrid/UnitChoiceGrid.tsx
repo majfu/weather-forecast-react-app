@@ -1,15 +1,14 @@
-import { useState, useEffect } from "react";
 import UnitChoice from "./UnitChoice";
 
-function UnitChoiceGrid() {
-  const [unitPreference, setUnitPreference] = useState(() => {
-    return localStorage.getItem("unitPreference") || "metric";
-  });
+interface UnitChoiceGridProps {
+  unitPreference: string;
+  setUnitPreference: React.Dispatch<React.SetStateAction<string>>;
+}
 
-  useEffect(() => {
-    localStorage.setItem("unitPreference", unitPreference);
-  }, [unitPreference]);
-
+function UnitChoiceGrid({
+  unitPreference,
+  setUnitPreference,
+}: UnitChoiceGridProps) {
   return (
     <div className="flex justify-end w-full mb-20 gap-10 text-4xl font-mono font-extrabold">
       <UnitChoice
