@@ -7,27 +7,19 @@ import LoadingOverlay from "./components/LoadingOverlay/LoadingOverlay";
 import AppText from "./components/AppText/AppText";
 import UnitChoiceGrid from "./components/UnitChoiceGrid/UnitChoiceGrid";
 import Favorite from "./components/Favorite/Favorite";
+import type { City } from "./model/City";
 
 function CityForecastPage() {
   const location = useLocation();
   const city = location.state?.city;
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [unitPreference, setUnitPreference] = useState(() => {
     return localStorage.getItem("unitPreference") || "metric";
   });
+  const [isFavorite, setIsfavorite] = useState<boolean>(false);
 
-  useEffect(() => {
-    getForecast();
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem("unitPreference", unitPreference);
-    getForecast();
-  }, [unitPreference]);
-
-  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [currentForecast, setCurrentForecast] = useState<CityForecast>();
-
   const cityForecastSearchParams: CityForecastSearch = {
     lat: city?.lat,
     lon: city?.lon,
@@ -48,6 +40,37 @@ function CityForecastPage() {
     }
   };
 
+  useEffect(() => {
+    localStorage.setItem("unitPreference", unitPreference);
+    getForecast();
+  }, [unitPreference]);
+
+  useEffect(() => {
+    getForecast();
+    setIsfavorite(
+      getCurrentFavorites().some((favorite) => isTheSameCity(favorite, city))
+    );
+  }, []);
+
+  useEffect(() => {
+    const currentFavorites = getCurrentFavorites();
+
+    const updatedFavorites = isFavorite
+      ? [...currentFavorites, city]
+      : currentFavorites.filter((fav) => !isTheSameCity(fav, city));
+
+    localStorage.setItem("favoritesList", JSON.stringify(updatedFavorites));
+  }, [isFavorite]);
+
+  const getCurrentFavorites = (): City[] => {
+    const storedFavorites = localStorage.getItem("favoritesList");
+    return storedFavorites ? (JSON.parse(storedFavorites) as City[]) : [];
+  };
+
+  const isTheSameCity = (city: City, cityToCompare: City): boolean => {
+    return city.lat == cityToCompare.lat && city.lon == cityToCompare.lon;
+  };
+
   // A note about what needs to be diplayed here ;) temporary
   // bieżące warunki pogodowe (w formie odpowiedniej ikony),
   // prawdopodobieństwo wystąpienia opadów (wyrażona w procentach),
@@ -61,7 +84,9 @@ function CityForecastPage() {
       {currentForecast ? (
         <div>
           <div className="flex">
-            <Favorite isFavorite={true} />
+            <div onClick={() => setIsfavorite(!isFavorite)}>
+              <Favorite isFavorite={isFavorite} />
+            </div>
             <UnitChoiceGrid
               unitPreference={unitPreference}
               setUnitPreference={setUnitPreference}
