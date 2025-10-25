@@ -85,7 +85,13 @@ function CityForecastPage() {
       {isLoading && <LoadingOverlay />}
       {currentForecast ? (
         <div>
-          <div className="flex">
+          <Link
+            to="/"
+            className="font-mono text-sky-950 text-xl font-semibold bg-sky-200 hover:bg-sky-950 hover:text-white rounded-lg p-5"
+          >
+            Go to Home Page
+          </Link>
+          <div className="flex mt-10">
             <div onClick={() => setIsfavorite(!isFavorite)}>
               <Favorite isFavorite={isFavorite} />
             </div>
