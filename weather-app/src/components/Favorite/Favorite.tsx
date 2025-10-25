@@ -24,7 +24,7 @@ function Favorite({ isFavorite }: FavoriteProps) {
       </span>
     </div>
   ) : (
-    <div className="group">
+    <div className="group font-semibold font-mono text-sky-950">
       <svg
         className="w-20 h-20 text-gray-800 dark:text-white hover:cursor-pointer hover:fill-sky-200"
         aria-hidden="true"
