@@ -14,6 +14,7 @@ function App() {
   const [cityInput, setCityInput] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [searchResultsList, setSearchResultsList] = useState<City[]>([]);
+  const [isCityNotFound, setIsCityNotFound] = useState<boolean>(false);
   const resultsEndRef = useRef<HTMLDivElement>(null);
 
   const citySearchParams: CitySearch = {
@@ -31,8 +32,10 @@ function App() {
     try {
       const results = await getCitySearchResults(citySearchParams);
       setSearchResultsList(results);
+      setIsCityNotFound(results.length == 0);
     } catch (error) {
       console.error(error);
+      setIsCityNotFound(true);
     } finally {
       setIsLoading(false);
     }
@@ -41,6 +44,10 @@ function App() {
   useEffect(() => {
     resultsEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [searchResultsList]);
+
+  useEffect(() => {
+    setIsCityNotFound(false);
+  }, [cityInput]);
 
   return (
     <div className="flex w-screen h-screen bg-sky-50 flex-col p-20 items-center">
@@ -68,6 +75,10 @@ function App() {
           <CityList cityList={searchResultsList} />
           <div ref={resultsEndRef} />
         </div>
+      )}
+
+      {isCityNotFound == true && (
+        <AppText text="Sorry, no city was found." style="header" />
       )}
     </div>
   );
