@@ -6,6 +6,7 @@ import type { CityForecast } from "./model/CityForecast";
 import LoadingOverlay from "./components/LoadingOverlay/LoadingOverlay";
 import AppText from "./components/AppText/AppText";
 import UnitChoiceGrid from "./components/UnitChoiceGrid/UnitChoiceGrid";
+import Favorite from "./components/Favorite/Favorite";
 
 function CityForecastPage() {
   const location = useLocation();
@@ -59,10 +60,13 @@ function CityForecastPage() {
       {isLoading && <LoadingOverlay />}
       {currentForecast ? (
         <div>
-          <UnitChoiceGrid
-            unitPreference={unitPreference}
-            setUnitPreference={setUnitPreference}
-          />
+          <div className="flex">
+            <Favorite isFavorite={true} />
+            <UnitChoiceGrid
+              unitPreference={unitPreference}
+              setUnitPreference={setUnitPreference}
+            />
+          </div>
           <AppText text={`Forecast for ${city.name}`} style="title" />
           <AppText text="Current weather ouside is" style="header" />
           <AppText
