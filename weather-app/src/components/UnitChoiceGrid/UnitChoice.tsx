@@ -1,16 +1,29 @@
+import type { RootState } from "../../app/store";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch } from "../../app/store";
+import {
+  metricUnit,
+  imperialUnit,
+  defaultUnit,
+} from "../../app/UnitPreferenceSlice";
+
 interface UnitChoiceProps {
   text: string;
   value: string;
-  unitPreference: string;
-  setUnitPreference: React.Dispatch<React.SetStateAction<string>>;
 }
 
-function UnitChoice({
-  text,
-  value,
-  unitPreference,
-  setUnitPreference,
-}: UnitChoiceProps) {
+function UnitChoice({ text, value }: UnitChoiceProps) {
+  const dispatch = useDispatch<AppDispatch>();
+  const unitPreference = useSelector(
+    (state: RootState) => state.unitPreference
+  );
+
+  const setUnitPreference = () => {
+    if (value === "metric") dispatch(metricUnit());
+    else if (value === "imperial") dispatch(imperialUnit());
+    else dispatch(defaultUnit());
+  };
+
   const style =
     value == unitPreference
       ? "text-white bg-sky-950"
@@ -18,7 +31,7 @@ function UnitChoice({
 
   return (
     <div
-      onClick={() => setUnitPreference(value)}
+      onClick={setUnitPreference}
       className={`${style} hover:bg-sky-900 flex items-center justify-center w-20 h-16 rounded-lg cursor-pointer`}
     >
       <div>{text}</div>

@@ -8,15 +8,17 @@ import AppText from "./components/AppText/AppText";
 import UnitChoiceGrid from "./components/UnitChoiceGrid/UnitChoiceGrid";
 import Favorite from "./components/Favorite/Favorite";
 import type { City } from "./model/City";
+import type { RootState } from "./app/store";
+import { useSelector } from "react-redux";
 
 function CityForecastPage() {
   const location = useLocation();
   const city = location.state?.city;
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const [unitPreference, setUnitPreference] = useState(() => {
-    return localStorage.getItem("unitPreference") || "metric";
-  });
+  const unitPreference = useSelector(
+    (state: RootState) => state.unitPreference
+  );
   const [isFavorite, setIsfavorite] = useState<boolean>(false);
 
   const [currentForecast, setCurrentForecast] = useState<CityForecast>();
@@ -41,7 +43,6 @@ function CityForecastPage() {
   };
 
   useEffect(() => {
-    localStorage.setItem("unitPreference", unitPreference);
     getForecast();
   }, [unitPreference]);
 
@@ -95,10 +96,7 @@ function CityForecastPage() {
             <div onClick={() => setIsfavorite(!isFavorite)}>
               <Favorite isFavorite={isFavorite} />
             </div>
-            <UnitChoiceGrid
-              unitPreference={unitPreference}
-              setUnitPreference={setUnitPreference}
-            />
+            <UnitChoiceGrid />
           </div>
           <AppText text={`Forecast for ${city.name}`} style="title" />
           <AppText text="Current weather outside is" style="header" />

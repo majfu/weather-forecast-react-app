@@ -17,18 +17,10 @@ function App() {
   const [isCityNotFound, setIsCityNotFound] = useState<boolean>(false);
   const resultsEndRef = useRef<HTMLDivElement>(null);
 
-  const [unitPreference, setUnitPreference] = useState(() => {
-    return localStorage.getItem("unitPreference") || "metric";
-  });
-
   const [favoriteCitiesList, setFavoriteCitiesList] = useState(() => {
     const storedFavorites = localStorage.getItem("favoritesList");
     return storedFavorites ? (JSON.parse(storedFavorites) as City[]) : [];
   });
-
-  useEffect(() => {
-    localStorage.setItem("unitPreference", unitPreference);
-  }, [unitPreference]);
 
   const citySearchParams: CitySearch = {
     q: cityInput,
@@ -66,10 +58,7 @@ function App() {
     <div className="flex w-screen h-screen bg-sky-50 flex-col p-20 items-center">
       {isLoading && <LoadingOverlay />}
 
-      <UnitChoiceGrid
-        unitPreference={unitPreference}
-        setUnitPreference={setUnitPreference}
-      />
+      <UnitChoiceGrid />
       <AppText text="Weather Checker" style="title" />
       <AppText text="Choose a city:" style="header" />
 
