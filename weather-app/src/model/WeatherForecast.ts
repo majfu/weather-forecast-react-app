@@ -1,19 +1,15 @@
 import type { UnitPreferenceState } from "../app/UnitPreferenceSlice";
 
-export interface CityForecast {
-  coord: {
-    lon: number;
-    lat: number;
-  };
-  weather: [
-    {
-      id: number;
-      main: string;
-      description: string;
-      icon: string;
-    },
-  ];
-  base: string;
+export interface WeatherForecast {
+  cod: string;
+  message: number;
+  cnt: number;
+  list: ForecastEntry[];
+  city: ForecastCity;
+}
+
+export interface ForecastEntry {
+  dt: number;
   main: {
     temp: number;
     feels_like: number;
@@ -23,32 +19,50 @@ export interface CityForecast {
     humidity: number;
     sea_level?: number;
     grnd_level?: number;
+    temp_kf?: number;
   };
-  visibility: number;
+  weather: [
+    {
+      id: number;
+      main: string;
+      description: string;
+      icon: string;
+    },
+  ];
+  clouds: {
+    all: number;
+  };
   wind: {
     speed: number;
     deg: number;
     gust?: number;
   };
+  visibility: number;
+  pop: number;
   rain?: {
-    "1h"?: number;
     "3h"?: number;
   };
-  clouds: {
-    all: number;
+  snow?: {
+    "3h"?: number;
   };
-  dt: number;
   sys: {
-    type?: number;
-    id?: number;
-    country: string;
-    sunrise: number;
-    sunset: number;
+    pod: "d" | "n";
   };
-  timezone: number;
+  dt_txt: string;
+}
+
+export interface ForecastCity {
   id: number;
   name: string;
-  cod: number;
+  coord: {
+    lat: number;
+    lon: number;
+  };
+  country: string;
+  population: number;
+  timezone: number;
+  sunrise: number;
+  sunset: number;
 }
 
 export function windDegreesToDirection(deg: number): string {
