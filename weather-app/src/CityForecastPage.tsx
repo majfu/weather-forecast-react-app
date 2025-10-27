@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import type { CityForecastSearch } from "./model/CityForecastSearch";
 import { useEffect, useState } from "react";
-import { getCurrentForecast } from "./AppService";
+import { getCurrentForecast, getCurrentWeatherIcon } from "./AppService";
 import type { CityForecast } from "./model/CityForecast";
 import LoadingOverlay from "./components/LoadingOverlay/LoadingOverlay";
 import AppText from "./components/AppText/AppText";
@@ -10,6 +10,7 @@ import Favorite from "./components/Favorite/Favorite";
 import type { AppDispatch, RootState } from "./app/store";
 import { useDispatch, useSelector } from "react-redux";
 import { addCity, isInFavorites, removeCity } from "./app/FavoriteCitiesSlice";
+import WeatherIcon from "./components/WeatherIcon/WeatherIcon";
 
 function CityForecastPage() {
   const location = useLocation();
@@ -57,7 +58,6 @@ function CityForecastPage() {
   };
 
   // A note about what needs to be diplayed here ;) temporary
-  // bieżące warunki pogodowe (w formie odpowiedniej ikony),
   // prawdopodobieństwo wystąpienia opadów (wyrażona w procentach),
   // ich rodzaj oraz ilość (wyrażona w milimetrach na metr kwadratowy), prędkość i kierunek wiatru,
   // stopień zachmurzenia.
@@ -82,6 +82,9 @@ function CityForecastPage() {
           </div>
           <AppText text={`Forecast for ${city.name}`} style="title" />
           <AppText text="Current weather outside is" style="header" />
+          <div className="flex flex-col items-center mb-15">
+            <WeatherIcon iconCode={currentForecast.weather[0].icon} />
+          </div>
           <AppText
             text={`Temperature: ${currentForecast.main.temp}`}
             style="regular"

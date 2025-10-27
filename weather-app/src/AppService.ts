@@ -23,3 +23,7 @@ export const getCurrentForecast = async (
   );
   return response.data;
 };
+
+export const getCurrentWeatherIcon = (iconCode: string): string => {
+  return `https://openweathermap.org/img/wn/${iconCode}@2x.png`;
+};
