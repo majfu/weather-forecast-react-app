@@ -8,7 +8,7 @@ export const unitPreferenceSlice = createSlice({
   reducers: {
     metricUnit: () => "metric" as UnitPreferenceState,
     imperialUnit: () => "imperial" as UnitPreferenceState,
-    defaultUnit: () => "default" as UnitPreferenceState,
+    defaultUnit: () => "standard" as UnitPreferenceState,
   },
 });
 
