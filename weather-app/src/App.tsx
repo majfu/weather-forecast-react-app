@@ -9,6 +9,8 @@ import type { City } from "./model/City";
 import type { CitySearch } from "./model/CitySearch";
 import { getCitySearchResults } from "./AppService";
 import CityList from "./components/CityList/CityList";
+import type { RootState } from "./app/store";
+import { useSelector } from "react-redux";
 
 function App() {
   const [cityInput, setCityInput] = useState<string>("");
@@ -17,10 +19,9 @@ function App() {
   const [isCityNotFound, setIsCityNotFound] = useState<boolean>(false);
   const resultsEndRef = useRef<HTMLDivElement>(null);
 
-  const [favoriteCitiesList, setFavoriteCitiesList] = useState(() => {
-    const storedFavorites = localStorage.getItem("favoritesList");
-    return storedFavorites ? (JSON.parse(storedFavorites) as City[]) : [];
-  });
+  const favoriteCitiesList = useSelector(
+    (state: RootState) => state.favoriteCities
+  );
 
   const citySearchParams: CitySearch = {
     q: cityInput,

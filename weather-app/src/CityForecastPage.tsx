@@ -7,19 +7,20 @@ import LoadingOverlay from "./components/LoadingOverlay/LoadingOverlay";
 import AppText from "./components/AppText/AppText";
 import UnitChoiceGrid from "./components/UnitChoiceGrid/UnitChoiceGrid";
 import Favorite from "./components/Favorite/Favorite";
-import type { City } from "./model/City";
-import type { RootState } from "./app/store";
-import { useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "./app/store";
+import { useDispatch, useSelector } from "react-redux";
+import { addCity, isInFavorites, removeCity } from "./app/FavoriteCitiesSlice";
 
 function CityForecastPage() {
   const location = useLocation();
   const city = location.state?.city;
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const dispatch = useDispatch<AppDispatch>();
   const unitPreference = useSelector(
     (state: RootState) => state.unitPreference
   );
-  const [isFavorite, setIsfavorite] = useState<boolean>(false);
+  const isFavorite = useSelector(isInFavorites(city));
 
   const [currentForecast, setCurrentForecast] = useState<CityForecast>();
   const cityForecastSearchParams: CityForecastSearch = {
@@ -48,30 +49,11 @@ function CityForecastPage() {
 
   useEffect(() => {
     getForecast();
-    setIsfavorite(
-      getCurrentFavorites().some((favorite) => isTheSameCity(favorite, city))
-    );
   }, []);
 
-  useEffect(() => {
-    const currentFavorites = getCurrentFavorites();
-
-    const updatedFavorites = isFavorite
-      ? currentFavorites.some((favorite) => isTheSameCity(favorite, city))
-        ? currentFavorites
-        : [...currentFavorites, city]
-      : currentFavorites.filter((fav) => !isTheSameCity(fav, city));
-
-    localStorage.setItem("favoritesList", JSON.stringify(updatedFavorites));
-  }, [isFavorite]);
-
-  const getCurrentFavorites = (): City[] => {
-    const storedFavorites = localStorage.getItem("favoritesList");
-    return storedFavorites ? (JSON.parse(storedFavorites) as City[]) : [];
-  };
-
-  const isTheSameCity = (city: City, cityToCompare: City): boolean => {
-    return city.lat == cityToCompare.lat && city.lon == cityToCompare.lon;
+  const toggleFavorite = () => {
+    if (isFavorite) dispatch(removeCity(city));
+    else dispatch(addCity(city));
   };
 
   // A note about what needs to be diplayed here ;) temporary
@@ -93,7 +75,7 @@ function CityForecastPage() {
             Go to Home Page
           </Link>
           <div className="flex mt-10">
-            <div onClick={() => setIsfavorite(!isFavorite)}>
+            <div onClick={toggleFavorite}>
               <Favorite isFavorite={isFavorite} />
             </div>
             <UnitChoiceGrid />
