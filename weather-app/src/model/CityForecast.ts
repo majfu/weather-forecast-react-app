@@ -1,3 +1,5 @@
+import type { UnitPreferenceState } from "../app/UnitPreferenceSlice";
+
 export interface CityForecast {
   coord: {
     lon: number;
@@ -47,4 +49,15 @@ export interface CityForecast {
   id: number;
   name: string;
   cod: number;
+}
+
+export function windDegreesToDirection(deg: number): string {
+  const directions = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"];
+  const index = Math.round(deg / 45) % 8;
+  return directions[index];
+}
+
+export function getWindSpeedUnit(unitPreference: UnitPreferenceState) {
+  if (unitPreference == "imperial") return "mph";
+  return "m/s";
 }

@@ -2,7 +2,11 @@ import { Link, useLocation } from "react-router-dom";
 import type { CityForecastSearch } from "./model/CityForecastSearch";
 import { useEffect, useState } from "react";
 import { getCurrentForecast, getCurrentWeatherIcon } from "./AppService";
-import type { CityForecast } from "./model/CityForecast";
+import {
+  getWindSpeedUnit,
+  windDegreesToDirection,
+  type CityForecast,
+} from "./model/CityForecast";
 import LoadingOverlay from "./components/LoadingOverlay/LoadingOverlay";
 import AppText from "./components/AppText/AppText";
 import UnitChoiceGrid from "./components/UnitChoiceGrid/UnitChoiceGrid";
@@ -57,12 +61,6 @@ function CityForecastPage() {
     else dispatch(addCity(city));
   };
 
-  // A note about what needs to be diplayed here ;) temporary
-  // prawdopodobieństwo wystąpienia opadów (wyrażona w procentach),
-  // ich rodzaj oraz ilość (wyrażona w milimetrach na metr kwadratowy), prędkość i kierunek wiatru,
-  // stopień zachmurzenia.
-  // prognozowana temperatura i warunki pogodowe na najbliższe 5 dni,
-
   return (
     <div className="flex w-screen h-screen bg-sky-50 flex-col p-20 items-center">
       {isLoading && <LoadingOverlay />}
@@ -80,17 +78,33 @@ function CityForecastPage() {
             </div>
             <UnitChoiceGrid />
           </div>
+
           <AppText text={`Forecast for ${city.name}`} style="title" />
           <AppText text="Current weather outside is" style="header" />
           <div className="flex flex-col items-center mb-15">
             <WeatherIcon iconCode={currentForecast.weather[0].icon} />
           </div>
+
           <AppText
             text={`Temperature: ${currentForecast.main.temp}`}
             style="regular"
           />
           <AppText
             text={`Humidity: ${currentForecast.main.humidity}`}
+            style="regular"
+          />
+          {currentForecast.rain?.["1h"] && (
+            <AppText
+              text={`Rain: ${currentForecast.rain?.["1h"]} mm/h`}
+              style="regular"
+            />
+          )}
+          <AppText
+            text={`Wind speed: ${currentForecast.wind.speed} ${getWindSpeedUnit(unitPreference)} in direction ${windDegreesToDirection(currentForecast.wind.deg)}`}
+            style="regular"
+          />
+          <AppText
+            text={`Cloudiness: ${currentForecast.clouds.all} %`}
             style="regular"
           />
         </div>
