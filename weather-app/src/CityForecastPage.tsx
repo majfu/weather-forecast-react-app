@@ -1,12 +1,13 @@
 import { Link, useLocation } from "react-router-dom";
-import type { CityForecastSearch } from "./model/CityForecastSearch";
+import type { WeatherForecastSearch } from "./model/WeatherForecastSearch";
 import { useEffect, useState } from "react";
-import { getCurrentForecast, getCurrentWeatherIcon } from "./AppService";
+import { getWeatherForecast } from "./AppService";
 import {
   getWindSpeedUnit,
   windDegreesToDirection,
-  type CityForecast,
-} from "./model/CityForecast";
+  type ForecastEntry,
+  type WeatherForecast,
+} from "./model/WeatherForecast";
 import LoadingOverlay from "./components/LoadingOverlay/LoadingOverlay";
 import AppText from "./components/AppText/AppText";
 import UnitChoiceGrid from "./components/UnitChoiceGrid/UnitChoiceGrid";
@@ -15,6 +16,7 @@ import type { AppDispatch, RootState } from "./app/store";
 import { useDispatch, useSelector } from "react-redux";
 import { addCity, isInFavorites, removeCity } from "./app/FavoriteCitiesSlice";
 import WeatherIcon from "./components/WeatherIcon/WeatherIcon";
+import TimeStampGrid from "./components/TimeStampGrid/TimeStampGrid";
 
 function CityForecastPage() {
   const location = useLocation();
@@ -27,20 +29,25 @@ function CityForecastPage() {
   );
   const isFavorite = useSelector(isInFavorites(city));
 
-  const [currentForecast, setCurrentForecast] = useState<CityForecast>();
-  const cityForecastSearchParams: CityForecastSearch = {
+  const [weatherForecast, setWeatherForecast] = useState<WeatherForecast>();
+  const [currentForecast, setCurrentForecast] = useState<ForecastEntry>();
+  const cityForecastSearchParams: WeatherForecastSearch = {
     lat: city?.lat,
     lon: city?.lon,
     appid: import.meta.env.VITE_WEATHER_API_KEY,
     units: unitPreference,
+    cnt: 40,
   };
+
+  const [timeStampIndex, setTimeStampIndex] = useState<number>(0);
 
   const getForecast = async () => {
     setIsLoading(true);
 
     try {
-      const results = await getCurrentForecast(cityForecastSearchParams);
-      setCurrentForecast(results);
+      const results = await getWeatherForecast(cityForecastSearchParams);
+      setWeatherForecast(results);
+      setCurrentForecast(results.list[timeStampIndex]);
     } catch (error) {
       console.error(error);
     } finally {
@@ -55,6 +62,10 @@ function CityForecastPage() {
   useEffect(() => {
     getForecast();
   }, []);
+
+  useEffect(() => {
+    setCurrentForecast(weatherForecast?.list[timeStampIndex]);
+  }, [timeStampIndex]);
 
   const toggleFavorite = () => {
     if (isFavorite) dispatch(removeCity(city));
@@ -93,9 +104,13 @@ function CityForecastPage() {
             text={`Humidity: ${currentForecast.main.humidity}`}
             style="regular"
           />
-          {currentForecast.rain?.["1h"] && (
+          <AppText
+            text={`Precipitation probability: ${currentForecast.pop * 100} %`}
+            style="regular"
+          />
+          {currentForecast.rain?.["3h"] && (
             <AppText
-              text={`Rain: ${currentForecast.rain?.["1h"]} mm/h`}
+              text={`Rain: ${currentForecast.rain?.["3h"]} mm/h`}
               style="regular"
             />
           )}
@@ -107,6 +122,7 @@ function CityForecastPage() {
             text={`Cloudiness: ${currentForecast.clouds.all} %`}
             style="regular"
           />
+          <TimeStampGrid setIndex={setTimeStampIndex} />
         </div>
       ) : (
         !isLoading && (

@@ -75,3 +75,18 @@ export function getWindSpeedUnit(unitPreference: UnitPreferenceState) {
   if (unitPreference == "imperial") return "mph";
   return "m/s";
 }
+
+export function getTimeStamps(): Date[] {
+  const numTimeStamps = 40;
+  const timeStampStepInHours = 3;
+  const nowTime = new Date();
+  const timeStamps = [];
+
+  for (let i = 0; i < numTimeStamps; i++) {
+    const stamp = new Date(
+      nowTime.getTime() + i * timeStampStepInHours * 60 * 60 * 1000
+    );
+    timeStamps.push(stamp);
+  }
+  return timeStamps;
+}
